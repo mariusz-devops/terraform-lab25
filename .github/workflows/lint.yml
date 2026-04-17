@@ -1,0 +1,30 @@
+name: "Terraform Quality Check"
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  lint-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: 1. Sprawdzenie formatowania (fmt)
+        run: terraform fmt -check
+        # Ta komenda zwróci błąd, jeśli kod nie jest idealnie sformatowany
+
+      - name: 2. Inicjalizacja (Init)
+        run: terraform init -backend=false
+
+      - name: 3. Walidacja logiczna (Validate)
+        run: terraform validate
+
+      - name: 4. Skanowanie bezpieczeństwa (tfsec)
+        uses: aquasecurity/tfsec-action@v1.0.0
