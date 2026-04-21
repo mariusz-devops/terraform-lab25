@@ -1,8 +1,8 @@
 # main.tf - Wersja Profesjonalna
 
 resource "google_storage_bucket" "messy_bucket" {
-  name     = "lab25-bezpieczny-bucket-2026"
-  location = "EU"
+  name                        = "lab25-bezpieczny-bucket-2026"
+  location                    = "EU"
   uniform_bucket_level_access = true
 
   # NAPRAWA: Dodajemy szyfrowanie kluczem klienta
@@ -21,5 +21,5 @@ resource "google_compute_firewall" "bad_firewall" {
   }
 
   # NAPRAWA: Zamiast 0.0.0.0/0 dajemy bezpieczny zakres (np. sieć firmowa)
-  source_ranges = ["10.0.0.0/8"] 
+  source_ranges = ["10.0.0.0/8"]
 }
