@@ -1,21 +1,18 @@
-resource "google_storage_bucket" "messy_bucket" {
-  name     = "lab25-totalny-chaos-bucket"
-  location = "EU"
+# main.tf - Wersja Profesjonalna
 
-  storage_class               = "STANDARD"
+resource "google_storage_bucket" "messy_bucket" {
+  name     = "lab25-bezpieczny-bucket-2026"
+  location = "EU"
   uniform_bucket_level_access = true
 
-  versioning {
-    enabled = false
-  }
-  labels = {
-    env   = "test"
-    owner = "mariusz"
+  # NAPRAWA: Dodajemy szyfrowanie kluczem klienta
+  encryption {
+    default_kms_key_name = "projects/my-project/locations/global/keyRings/my-ring/cryptoKeys/my-key"
   }
 }
 
 resource "google_compute_firewall" "bad_firewall" {
-  name    = "allow-http"
+  name    = "allow-http-internal"
   network = "default"
 
   allow {
@@ -23,5 +20,6 @@ resource "google_compute_firewall" "bad_firewall" {
     ports    = ["80"]
   }
 
-  source_ranges = ["0.0.0.0/0"]
+  # NAPRAWA: Zamiast 0.0.0.0/0 dajemy bezpieczny zakres (np. sieć firmowa)
+  source_ranges = ["10.0.0.0/8"] 
 }
