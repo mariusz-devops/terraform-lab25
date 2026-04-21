@@ -38,7 +38,4 @@ jobs:
 
       - name: 4. Skanowanie bezpieczeństwa (tfsec)
         uses: aquasecurity/tfsec-action@v1.0.0
-        with:
-          # Profesjonalne podejście: Zatrzymaj rurociąg tylko przy błędach HIGH lub CRITICAL
-          # (Błędy LOW i MEDIUM zostaną wypisane jako ostrzeżenia)
-          minimum_severity: high
+    
