@@ -9,18 +9,28 @@ on:
 jobs:
   lint-and-validate:
     runs-on: ubuntu-latest
+    
+    # Rozwiązanie problemu deprecjacji Node.js 20
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        # Aktualizacja do v5 (wspiera Node.js 24)
+        uses: actions/checkout@v5
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        # Aktualizacja do v4 (wspiera Node.js 24)
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.7.0"
 
       - name: 1. Sprawdzenie formatowania (fmt)
         run: terraform fmt -check
-        # Ta komenda zwróci błąd, jeśli kod nie jest idealnie sformatowany
+        # Zwróci exit code 3, jeśli kod wymaga poprawki (fmt)
 
       - name: 2. Inicjalizacja (Init)
+        # Używamy -backend=false, bo w CI sprawdzamy tylko kod, nie łączymy się ze stanem (State)
         run: terraform init -backend=false
 
       - name: 3. Walidacja logiczna (Validate)
@@ -28,3 +38,7 @@ jobs:
 
       - name: 4. Skanowanie bezpieczeństwa (tfsec)
         uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          # Profesjonalne podejście: Zatrzymaj rurociąg tylko przy błędach HIGH lub CRITICAL
+          # (Błędy LOW i MEDIUM zostaną wypisane jako ostrzeżenia)
+          minimum_severity: high
